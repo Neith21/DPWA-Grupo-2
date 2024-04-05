@@ -1,4 +1,5 @@
 using SyzygyLibrarySystem.Data;
+using SyzygyLibrarySystem.Repositories.LoanDetails;
 using SyzygyLibrarySystem.Repositories.Loans;
 using SyzygyLibrarySystem.Repositories.Publishers;
 
@@ -14,8 +15,9 @@ internal class Program
 		builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 		builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 		builder.Services.AddScoped<ILoanRepository, LoanRepository>();
+        builder.Services.AddScoped<ILoanDetailRepository, LoanDetailRepository>();
 
-		var app = builder.Build();
+        var app = builder.Build();
 
 		// Configure the HTTP request pipeline.
 		if (!app.Environment.IsDevelopment())
