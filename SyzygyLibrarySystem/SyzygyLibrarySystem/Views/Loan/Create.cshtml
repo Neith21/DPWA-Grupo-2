@@ -1,0 +1,62 @@
+﻿@model LoanModel
+
+@{
+    ViewData["Title"] = "Nuevo Préstamo";
+}
+
+<h1 style="text-align:center">Nuevo Préstamo</h1>
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Create" onsubmit="return confirmAction();">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="StudentCode" class="form-label">Código del estudiante</label>
+                    <input asp-for="StudentCode" type="text" class="form-control" />
+                    <span asp-validation-for="StudentCode" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="LoanDate" class="form-label">Fecha del préstamo</label>
+                    <input asp-for="LoanDate" type="date" class="form-control" />
+                    <span asp-validation-for="LoanDate" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ReturnDate" class="form-label">Fecha de devolución</label>
+                    <input asp-for="ReturnDate" type="date" class="form-control" />
+                    <span asp-validation-for="ReturnDate" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="LoanStatus" class="form-label">Estado del préstamo</label>
+                    <input asp-for="LoanStatus" type="text" class="form-control" />
+                    <span asp-validation-for="LoanStatus" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+
+                    <a asp-action="Index" class="btn btn-danger">Regresar al listado</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function confirmAction() {
+            if (confirm('¿Estás seguro de hacer este préstamo?')) {
+                return true;
+            } else {
+                window.location.href = '@Url.Action("Index", "Loan")';
+                return false;
+            }
+        }
+    </script>
+}

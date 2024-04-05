@@ -1,0 +1,104 @@
+﻿@model IEnumerable<LoanModel>
+@{
+	ViewData["Title"] = "Listado de Préstamos";
+}
+
+<h1 style="text-align:center">Listado de Préstamos</h1>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="mb-3 mb-3">
+				<a asp-action="Create" asp-controller="Loan" class="btn btn-success">
+					Nuevo Préstamo
+				</a>
+			</div>
+
+			@if (TempData["message"] != null)
+			{
+				<div class="alert alert-primary" role="alert">
+					@TempData["message"]
+				</div>
+			}
+
+			<table class="table table-bordered table-striped table-responsive" id="loanTable">
+				<thead>
+					<tr>
+						<td>Préstamo ID</td>
+						<td>Código del estudiante</td>
+						<td>Fecha del préstamo</td>
+						<td>Fecha de devolución</td>
+						<td>Estado del préstamo</td>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var loan in Model)
+					{
+						<tr>
+							<td>@Html.DisplayFor(item => loan.LoanId)</td>
+							<td>@Html.DisplayFor(item => loan.StudentCode)</td>
+							<td>@Html.DisplayFor(item => loan.LoanDate)</td>
+							<td>@Html.DisplayFor(item => loan.ReturnDate)</td>
+							<td>@Html.DisplayFor(item => loan.LoanStatus)</td>
+							<td>
+								<a asp-controller="Loan"
+								   asp-action="Edit"
+								   asp-route-id="@loan.LoanId"
+								   class="btn btn-primary">
+									Editar
+								</a>
+								<a asp-controller="Loan"
+								   asp-action="Delete"
+								   asp-route-id="@loan.LoanId"
+								   class="btn btn-danger">
+									Eliminar
+								</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$("#loanTable").DataTable({
+				dom: 'Bfrtip',
+				buttons: [
+					{
+						extend: 'csv',
+						exportOptions: {
+							columns: ':not(:last-child)'
+						}
+					},
+					{
+						extend: 'pdf',
+						exportOptions: {
+							columns: ':not(:last-child)'
+						}
+					},
+					{
+						extend: 'excel',
+						exportOptions: {
+							columns: ':not(:last-child)'
+						}
+					}
+				],
+				columnDefs: [
+					{
+						targets: 5,
+						orderable: false,
+						searchable: false
+					}
+				],
+				language: {
+					url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+				}
+			});
+		});
+	</script>
+}

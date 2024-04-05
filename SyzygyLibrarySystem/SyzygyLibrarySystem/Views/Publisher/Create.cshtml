@@ -1,0 +1,52 @@
+﻿@model PublisherModel
+
+@{
+    ViewData["Title"] = "Nueva Editorial";
+}
+
+<h1 style="text-align:center">Nueva Editorial</h1>
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Create" onsubmit="return confirmAction();">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="PublisherName" class="form-label">Editorial</label>
+                    <input asp-for="PublisherName" type="text" class="form-control" />
+                    <span asp-validation-for="PublisherName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Country" class="form-label">País</label>
+                    <input asp-for="Country" type="text" class="form-control" />
+                    <span asp-validation-for="Country" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+
+                    <a asp-action="Index" class="btn btn-danger">Regresar al listado</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function confirmAction() {
+            if (confirm('¿Estás seguro de agregar esta editorial?')) {
+                return true;
+            } else {
+                window.location.href = '@Url.Action("Index", "Publisher")';
+                return false;
+            }
+        }
+    </script>
+}
