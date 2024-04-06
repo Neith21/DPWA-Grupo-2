@@ -37,7 +37,7 @@ namespace SyzygyLibrarySystem.Repositories.Loans
                 return
                     connection.QueryFirstOrDefault<LoanModel>(
                         storeProcedure,
-                        new { Id = id },
+                        new { LoanId = id },
                         commandType: CommandType.StoredProcedure
                     );
             }
@@ -79,7 +79,7 @@ namespace SyzygyLibrarySystem.Repositories.Loans
 
                 connection.Execute(
                     storeProcedure,
-					new { Id = id },
+					new { LoanId = id },
 					commandType: CommandType.StoredProcedure
                 );
             }

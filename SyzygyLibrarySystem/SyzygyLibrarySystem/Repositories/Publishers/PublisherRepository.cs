@@ -32,12 +32,12 @@ namespace SyzygyLibrarySystem.Repositories.Publishers
         {
             using (var connection = _dataAccess.GetConnection())
             {
-                string storeProcedure = "spPublishers_GetId";
+                string storeProcedure = "spPublishers_GetById";
 
                 return
                     connection.QueryFirstOrDefault<PublisherModel>(
                         storeProcedure,
-                        new { Id = id },
+                        new { PublisherId = id },
                         commandType: CommandType.StoredProcedure
                     );
             }
@@ -78,7 +78,7 @@ namespace SyzygyLibrarySystem.Repositories.Publishers
 
                 connection.Execute(
                     storeProcedure,
-					new { Id = id },
+					new { PublisherId = id },
 					commandType: CommandType.StoredProcedure
                 );
             }

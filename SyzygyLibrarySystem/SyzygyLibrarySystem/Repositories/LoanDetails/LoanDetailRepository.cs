@@ -32,7 +32,7 @@ namespace SyzygyLibrarySystem.Repositories.LoanDetails
         {
             using (var connection = _dataAccess.GetConnection())
             {
-                string storedProcedure = "spLoanDetails_GetAll";
+                string storedProcedure = "spLoanDetails_GetByAll";
 
                 var loanDetails = connection.Query<LoanDetailModel, BookModel, LoanDetailModel>
                     (storedProcedure, (loanDetail, book) => {
@@ -56,7 +56,7 @@ namespace SyzygyLibrarySystem.Repositories.LoanDetails
                 return
                     connection.QueryFirstOrDefault<LoanDetailModel>(
                         storeProcedure,
-                        new { Id = id },
+                        new { DetailId = id },
                         commandType: CommandType.StoredProcedure
                     );
             }
@@ -98,7 +98,7 @@ namespace SyzygyLibrarySystem.Repositories.LoanDetails
 
                 connection.Execute(
                     storeProcedure,
-                    new { Id = id },
+                    new { DetailId = id },
                     commandType: CommandType.StoredProcedure
                 );
             }

@@ -60,6 +60,15 @@ INSERT INTO Students
 VALUES('U20210463', 'Ariel', 'Chávez', NULL, 'cristian.1945theend@gmail.com', NULL);
 GO
 
+INSERT INTO Authors
+VALUES('Ariel', 'El Salvador', NULL);
+GO
+
+INSERT INTO Books
+VALUES('Hola Mundo', 1, 1, NULL, NULL, 25);
+GO
+
+
 --SP Publishers--
 CREATE OR ALTER PROCEDURE spPublishers_Delete
 	@PublisherId INT
@@ -158,4 +167,47 @@ BEGIN
 		LoanStatus = @LoanStatus
 	WHERE LoanId = @LoanId
 END;
+GO
+
+--SP Books--
+CREATE OR ALTER PROCEDURE spBooks_GetAll
+AS
+BEGIN
+	SELECT BookId, Title, AuthorId, PublisherId, PublicationYear, Genre, Quantity
+	FROM Books;
+END;
+GO
+
+--SP LoanDetails--
+CREATE OR ALTER PROCEDURE spLoanDetails_GetAll
+AS
+BEGIN
+	SELECT ld.DetailId, ld.LoanId, b.Title, ld.Quantity
+	FROM LoanDetails ld
+	INNER JOIN Books b
+	ON ld.BookId = b.BookId;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE spLoanDetails_GetById
+	@DetailId INT
+AS
+BEGIN
+	 SELECT DetailId, LoanId, BookId, Quantity
+	 FROM LoanDetails
+	 WHERE DetailId = @DetailId;
+END
+GO
+
+CREATE OR ALTER PROCEDURE spLoanDetails_Insert
+(
+    @LoanId INT,
+    @BookId INT,
+    @Quantity INT
+)
+AS
+BEGIN
+	INSERT INTO LoanDetails
+	VALUES(@LoanId, @BookId, @Quantity);
+END
 GO
