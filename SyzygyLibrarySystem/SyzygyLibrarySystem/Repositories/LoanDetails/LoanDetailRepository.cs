@@ -80,11 +80,11 @@ namespace SyzygyLibrarySystem.Repositories.LoanDetails
         {
             using (var connection = _dataAccess.GetConnection())
             {
-                string storeProcedure = "dbo.spUniversity_Update";
+                string storeProcedure = "spLoanDetails_Update";
 
                 connection.Execute(
                     storeProcedure,
-                    loanDetail,
+                    new { loanDetail.DetailId, loanDetail.LoanId, loanDetail.BookId, loanDetail.Quantity },
                     commandType: CommandType.StoredProcedure
                 );
             }
@@ -94,7 +94,7 @@ namespace SyzygyLibrarySystem.Repositories.LoanDetails
         {
             using (var connection = _dataAccess.GetConnection())
             {
-                string storeProcedure = "dbo.spUniversity_Delete";
+                string storeProcedure = "spLoanDetails_Delete";
 
                 connection.Execute(
                     storeProcedure,

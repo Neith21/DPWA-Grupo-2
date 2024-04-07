@@ -8,7 +8,7 @@ namespace SyzygyLibrarySystem.Models
         [Required]
         public int BookId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Ingrese el título")]
         [DisplayName("Título del libro")]
         public string Title { get; set; }
 

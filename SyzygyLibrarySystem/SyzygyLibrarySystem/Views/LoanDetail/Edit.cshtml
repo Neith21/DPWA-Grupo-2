@@ -1,10 +1,10 @@
-﻿@model BookModel
+﻿@model LoanDetailModel
 
 @{
-    ViewData["Title"] = "Edición de Libro";
+    ViewData["Title"] = "Edición de Detalle Préstamo";
 }
 
-<h1 style="text-align:center">Edición de Libro</h1>
+<h1 style="text-align:center">Edición de Detalle Préstamo</h1>
 <hr />
 
 <div class="container">
@@ -15,43 +15,24 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="mb-3">
-                    <input asp-for="BookId" type="hidden" class="form-control" />
+                    <input asp-for="DetailId" type="hidden" class="form-control" />
                 </div>
                 <div class="mb-3">
-                    <label asp-for="Title" class="form-label">Título</label>
-                    <input asp-for="Title" type="text" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
+                    <label asp-for="LoanId" class="form-label">Préstamo ID</label>
+                    <input asp-for="LoanId" type="text" class="form-control" />
+                    <span asp-validation-for="LoanId" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label asp-for="AuthorId" class="form-label">Autor</label>
-                    <select asp-for="AuthorId"
-                            asp-items="@ViewBag.Authors"
+                    <label asp-for="BookId" class="form-label">Libro</label>
+                    <select asp-for="BookId"
+                            asp-items="@ViewBag.Books"
                             class="form-select">
                         <option value="">Seleccione</option>
                     </select>
-                    <span asp-validation-for="AuthorId" class="text-danger"></span>
+                    <span asp-validation-for="BookId" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label asp-for="PublisherId" class="form-label">Editorial</label>
-                    <select asp-for="PublisherId"
-                            asp-items="@ViewBag.Publishers"
-                            class="form-select">
-                        <option value="">Seleccione</option>
-                    </select>
-                    <span asp-validation-for="PublisherId" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="PublicationYear" class="form-label">Año de publicación</label>
-                    <input asp-for="PublicationYear" type="date" class="form-control" />
-                    <span asp-validation-for="PublicationYear" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="Genre" class="form-label">Género</label>
-                    <input asp-for="Genre" type="text" class="form-control" />
-                    <span asp-validation-for="Genre" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="Quantity" class="form-label">Disponibles</label>
+                    <label asp-for="Quantity" class="form-label">Cantidad</label>
                     <div class="input-group">
                         <input asp-for="Quantity" type="number" class="form-control" min="1" />
                         <button type="button" class="btn btn-secondary" onclick="increment()">+</button>
@@ -76,10 +57,10 @@
     }
     <script>
         function confirmAction() {
-            if (confirm('¿Estás seguro de editar este libro al préstamo?')) {
+            if (confirm('¿Estás seguro de editar este libro al detalle de préstamo?')) {
                 return true;
             } else {
-                window.location.href = '@Url.Action("Index", "Book")';
+                window.location.href = '@Url.Action("Index", "LoanDetail")';
                 return false;
             }
         }

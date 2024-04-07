@@ -50,8 +50,8 @@ GO
 
 CREATE TABLE LoanDetails(
     DetailId INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-    LoanId INT NOT NULL FOREIGN KEY REFERENCES Loans(LoanId),
     Quantity INT NOT NULL,
+	LoanId INT NOT NULL FOREIGN KEY REFERENCES Loans(LoanId),
     BookId INT NOT NULL FOREIGN KEY REFERENCES Books(BookId)
 );
 GO
@@ -63,11 +63,13 @@ GO
 INSERT INTO Authors
 VALUES('Ariel', 'El Salvador', NULL);
 GO
+INSERT INTO Authors
+VALUES('SVV', 'El Salvador', NULL);
+GO
 
 INSERT INTO Books
 VALUES('Hola Mundo', NULL, NULL, 25, 1, 1);
 GO
-
 
 --SP Publishers Pueden guiarse de estos procedimientos almacenados para hacer Authors y Studens--
 
@@ -126,8 +128,6 @@ BEGIN
 END;
 GO
 
-
-
 --Estos son los otros sp, no guiarse de estos c:
 --SP Loans--
 CREATE OR ALTER PROCEDURE spLoans_Delete
@@ -183,10 +183,20 @@ END;
 GO
 
 --SP LoanDetails--
+
+CREATE OR ALTER PROCEDURE spLoanDetails_Delete
+	@DetailId INT
+AS
+BEGIN
+	DELETE FROM LoanDetails
+	WHERE DetailId = @DetailId;
+END;
+GO
+
 CREATE OR ALTER PROCEDURE spLoanDetails_GetAll
 AS
 BEGIN
-	SELECT ld.DetailId, ld.LoanId, ld.Quantity, b.Title
+	SELECT ld.DetailId, ld.Quantity, ld.LoanId, b.Title
 	FROM LoanDetails ld
 	INNER JOIN Books b
 	ON ld.BookId = b.BookId;
@@ -205,16 +215,34 @@ GO
 
 CREATE OR ALTER PROCEDURE spLoanDetails_Insert
 (
+	@Quantity INT,
     @LoanId INT,
-    @BookId INT,
-    @Quantity INT
+    @BookId INT
 )
 AS
 BEGIN
 	INSERT INTO LoanDetails
-	VALUES(@LoanId, @BookId, @Quantity);
+	VALUES(@Quantity, @LoanId, @BookId);
 END
 GO
+
+CREATE OR ALTER PROCEDURE spLoanDetails_Update
+(
+	@DetailId INT,
+	@Quantity INT,
+    @LoanId INT,
+    @BookId INT
+)
+AS
+BEGIN
+	UPDATE LoanDetails
+	SET Quantity = @Quantity,
+		LoanId = @LoanId,
+		BookId = @BookId
+	WHERE DetailId = @DetailId;
+END;
+GO
+
 CREATE OR ALTER PROCEDURE spDBooks_GetAll
 AS
 BEGIN
@@ -224,6 +252,16 @@ END;
 GO
 
 --SP Books--
+
+CREATE OR ALTER PROCEDURE spBooks_Delete
+	@BookId INT
+AS
+BEGIN
+	DELETE FROM Books
+	WHERE BookId = @BookId;
+END;
+GO
+
 CREATE OR ALTER PROCEDURE spBooks_GetAll
 AS
 BEGIN
@@ -261,6 +299,29 @@ BEGIN
 END
 GO
 
+CREATE OR ALTER PROCEDURE spBooks_Update
+(
+	@BookId INT,
+    @Title NVARCHAR(100),
+    @PublicationYear DATE,
+    @Genre VARCHAR(25),
+    @Quantity INT,
+	@AuthorId INT,
+    @PublisherId INT
+)
+AS
+BEGIN
+	UPDATE Books
+	SET Title = @Title,
+		PublicationYear = @PublicationYear,
+		Genre = @Genre,
+		Quantity = @Quantity,
+		AuthorId = @AuthorId,
+		PublisherId = @PublisherId
+	WHERE BookId = @BookId;
+END;
+GO
+
 --SP Authors--
 CREATE OR ALTER PROCEDURE spAuthors_GetAll
 AS
@@ -269,3 +330,49 @@ BEGIN
 	FROM Authors;
 END;
 GO
+
+
+--Triggers--
+CREATE OR ALTER TRIGGER SubtractBookQuantity
+ON LoanDetails
+AFTER INSERT
+AS
+BEGIN
+    UPDATE Books
+    SET Quantity = Quantity - (SELECT Quantity FROM inserted WHERE Books.BookId = inserted.BookId)
+    WHERE BookId IN (SELECT BookId FROM inserted);
+END;
+GO
+
+CREATE OR ALTER TRIGGER AddBookQuantity
+ON LoanDetails
+AFTER DELETE
+AS
+BEGIN
+    UPDATE Books
+    SET Quantity = Quantity + (SELECT Quantity FROM deleted WHERE Books.BookId = deleted.BookId)
+    WHERE BookId IN (SELECT BookId FROM deleted);
+END;
+GO
+
+CREATE OR ALTER TRIGGER UpdateBookQuantity
+ON LoanDetails
+INSTEAD OF UPDATE
+AS
+BEGIN
+    -- Actualizar la cantidad de libros y los detalles del préstamo
+    UPDATE Books
+    SET Quantity = Quantity - COALESCE((SELECT SUM(CASE WHEN i.Quantity > d.Quantity THEN (i.Quantity - d.Quantity) ELSE 0 END) 
+                                         FROM inserted i JOIN deleted d ON i.DetailId = d.DetailId 
+                                         WHERE Books.BookId = d.BookId), 0) +
+                   COALESCE((SELECT SUM(CASE WHEN d.Quantity > i.Quantity THEN (d.Quantity - i.Quantity) ELSE 0 END) 
+                                         FROM inserted i JOIN deleted d ON i.DetailId = d.DetailId 
+                                         WHERE Books.BookId = d.BookId), 0)
+    WHERE BookId IN (SELECT BookId FROM inserted);
+
+    -- Actualizar los detalles del préstamo
+    UPDATE LoanDetails
+    SET Quantity = i.Quantity
+    FROM inserted i
+    WHERE LoanDetails.DetailId = i.DetailId;
+END;

@@ -96,11 +96,11 @@ namespace SyzygyLibrarySystem.Repositories.Books
         {
             using (var connection = _dataAccess.GetConnection())
             {
-                string storeProcedure = "dbo.spUniversity_Update";
+                string storeProcedure = "spBooks_Update";
 
                 connection.Execute(
                     storeProcedure,
-                    book,
+                    new { book.BookId, book.Title, book.AuthorId, book.PublisherId, book.PublicationYear, book.Genre, book.Quantity },
                     commandType: CommandType.StoredProcedure
                 );
             }
@@ -110,7 +110,7 @@ namespace SyzygyLibrarySystem.Repositories.Books
         {
             using (var connection = _dataAccess.GetConnection())
             {
-                string storeProcedure = "dbo.spUniversity_Delete";
+                string storeProcedure = "spBooks_Delete";
 
                 connection.Execute(
                     storeProcedure,
