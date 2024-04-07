@@ -21,14 +21,16 @@ namespace SyzygyLibrarySystem.Models
         public int PublisherId { get; set; }
 
         [DisplayName("Año de publicación")]
-        public DateOnly PublicationYear { get; set; }
+        public DateTime PublicationYear { get; set; }
 
         [DisplayName("Género")]
         public string? Genre { get; set; }
 
         [Required]
         [DisplayName("Cantidad disponible")]
-        public int Cantidad { get; set; }
+        public int Quantity { get; set; }
+
+        public AuthorModel? Author { get; set; }
 
         public PublisherModel? Publisher { get; set; }
     }

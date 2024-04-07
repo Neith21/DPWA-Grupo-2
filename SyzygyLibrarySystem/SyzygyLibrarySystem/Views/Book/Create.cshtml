@@ -1,0 +1,97 @@
+﻿@model BookModel
+
+@{
+    ViewData["Title"] = "Nuevo Libro";
+}
+
+<h1 style="text-align:center">Nuevo Libro</h1>
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Create" onsubmit="return confirmAction();">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">Título</label>
+                    <input asp-for="Title" type="text" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="AuthorId" class="form-label">Autor</label>
+                    <select asp-for="AuthorId"
+                            asp-items="@ViewBag.Authors"
+                            class="form-select">
+                        <option value="">Seleccione</option>
+                    </select>
+                    <span asp-validation-for="AuthorId" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PublisherId" class="form-label">Editorial</label>
+                    <select asp-for="PublisherId"
+                            asp-items="@ViewBag.Publishers"
+                            class="form-select">
+                        <option value="">Seleccione</option>
+                    </select>
+                    <span asp-validation-for="PublisherId" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PublicationYear" class="form-label">Año de publicación</label>
+                    <input asp-for="PublicationYear" type="date" class="form-control" />
+                    <span asp-validation-for="PublicationYear" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Genre" class="form-label">Género</label>
+                    <input asp-for="Genre" type="text" class="form-control" />
+                    <span asp-validation-for="Genre" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Quantity" class="form-label">Disponibles</label>
+                    <div class="input-group">
+                        <input asp-for="Quantity" type="number" class="form-control" min="1" />
+                        <button type="button" class="btn btn-secondary" onclick="increment()">+</button>
+                        <button type="button" class="btn btn-secondary" onclick="decrement()">-</button>
+                    </div>
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+
+                    <a asp-action="Index" class="btn btn-danger">Regresar al listado</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function confirmAction() {
+            if (confirm('¿Estás seguro de añadir este libro al préstamo?')) {
+                return true;
+            } else {
+                window.location.href = '@Url.Action("Index", "Book")';
+                return false;
+            }
+        }
+        function increment() {
+            var input = document.getElementById('Quantity');
+            var currentValue = parseInt(input.value);
+            input.value = currentValue + 1;
+        }
+
+        function decrement() {
+            var input = document.getElementById('Quantity');
+            var currentValue = parseInt(input.value);
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+            }
+        }
+    </script>
+}

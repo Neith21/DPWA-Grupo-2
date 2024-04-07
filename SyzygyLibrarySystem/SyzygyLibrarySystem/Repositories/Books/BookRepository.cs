@@ -3,80 +3,96 @@ using System.Data;
 using SyzygyLibrarySystem.Data;
 using SyzygyLibrarySystem.Models;
 
-namespace SyzygyLibrarySystem.Repositories.LoanDetails
+namespace SyzygyLibrarySystem.Repositories.Books
 {
-    public class LoanDetailRepository : ILoanDetailRepository
+    public class BookRepository : IBookRepository
     {
         private readonly ISqlDataAccess _dataAccess;
 
-        public LoanDetailRepository(ISqlDataAccess dataAccess)
+        public BookRepository(ISqlDataAccess dataAccess)
         {
             _dataAccess = dataAccess;
         }
 
-        public IEnumerable<BookModel> GetAllBooks()
+        public IEnumerable<AuthorModel> GetAllAuthors()
         {
             using (var connection = _dataAccess.GetConnection())
             {
-                string storeProcedure = "spDBooks_GetAll";
+                string storeProcedure = "spAuthors_GetAll";
 
                 return
-                    connection.Query<BookModel>(
+                    connection.Query<AuthorModel>(
                         storeProcedure,
                         commandType: CommandType.StoredProcedure
                     );
             }
         }
 
-        public IEnumerable<LoanDetailModel> GetAll()
+        public IEnumerable<PublisherModel> GetAllPublishers()
         {
             using (var connection = _dataAccess.GetConnection())
             {
-                string storedProcedure = "spLoanDetails_GetAll";
-
-                var loanDetails = connection.Query<LoanDetailModel, BookModel, LoanDetailModel>
-                    (storedProcedure, (loanDetail, book) => {
-                        loanDetail.Book = book;
-
-                        return loanDetail;
-                    },
-                    splitOn: "Title",
-                    commandType: CommandType.StoredProcedure);
-
-                return loanDetails;
-            }
-        }
-
-        public LoanDetailModel? GetById(int id)
-        {
-            using (var connection = _dataAccess.GetConnection())
-            {
-                string storeProcedure = "spLoanDetails_GetById";
+                string storeProcedure = "spPublishers_GetAll";
 
                 return
-                    connection.QueryFirstOrDefault<LoanDetailModel>(
+                    connection.Query<PublisherModel>(
                         storeProcedure,
-                        new { DetailId = id },
                         commandType: CommandType.StoredProcedure
                     );
             }
         }
 
-        public void Add(LoanDetailModel loanDetail)
+		public IEnumerable<BookModel> GetAll()
+		{
+			using (var connection = _dataAccess.GetConnection())
+			{
+				string storedProcedure = "spBooks_GetAll";
+
+				var books = connection.Query<BookModel, AuthorModel, PublisherModel, BookModel>
+					(storedProcedure, (book, author, publisher) => {
+						book.Author = author;
+						book.Publisher = publisher;
+
+						return book;
+					},
+					splitOn: "AuthorName,PublisherName",
+					commandType: CommandType.StoredProcedure);
+
+				return books;
+			}
+		}
+
+
+		public BookModel? GetById(int id)
         {
             using (var connection = _dataAccess.GetConnection())
             {
-                string storeProcedure = "spLoanDetails_Insert";
+                string storeProcedure = "spBooks_GetById";
+
+                return
+                    connection.QueryFirstOrDefault<BookModel>(
+                        storeProcedure,
+                        new { BookId = id },
+                        commandType: CommandType.StoredProcedure
+                    );
+            }
+        }
+
+        public void Add(BookModel book)
+        {
+            using (var connection = _dataAccess.GetConnection())
+            {
+                string storeProcedure = "spBooks_Insert";
 
                 connection.Execute(
                     storeProcedure,
-                    new { loanDetail.LoanId, loanDetail.BookId, loanDetail.Quantity },
+                    new { book.Title, book.AuthorId, book.PublisherId, book.PublicationYear, book.Genre, book.Quantity },
                     commandType: CommandType.StoredProcedure
                 );
             }
         }
 
-        public void Edit(LoanDetailModel loanDetail)
+        public void Edit(BookModel book)
         {
             using (var connection = _dataAccess.GetConnection())
             {
@@ -84,7 +100,7 @@ namespace SyzygyLibrarySystem.Repositories.LoanDetails
 
                 connection.Execute(
                     storeProcedure,
-                    loanDetail,
+                    book,
                     commandType: CommandType.StoredProcedure
                 );
             }
@@ -98,7 +114,7 @@ namespace SyzygyLibrarySystem.Repositories.LoanDetails
 
                 connection.Execute(
                     storeProcedure,
-                    new { DetailId = id },
+                    new { BookId = id },
                     commandType: CommandType.StoredProcedure
                 );
             }
