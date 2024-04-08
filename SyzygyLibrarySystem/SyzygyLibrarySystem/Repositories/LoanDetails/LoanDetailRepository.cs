@@ -28,7 +28,30 @@ namespace SyzygyLibrarySystem.Repositories.LoanDetails
             }
         }
 
-        public IEnumerable<LoanDetailModel> GetAll()
+		public IEnumerable<LoanDetailModel> GetSpecificById(int id)
+		{
+			using (var connection = _dataAccess.GetConnection())
+			{
+				string storedProcedure = "spLoanDetails_GetAllSpecific";
+
+				var loanDetails = connection.Query<LoanDetailModel, BookModel, LoanDetailModel>(
+					storedProcedure,
+					(loanDetail, book) =>
+					{
+						loanDetail.Book = book;
+						return loanDetail;
+					},
+					splitOn: "Title",
+					commandType: CommandType.StoredProcedure,
+					param: new { LoanId = id }
+				);
+
+				// Filtrar la colección de loanDetails para devolver solo los detalles de préstamo con el ID especificado
+				return loanDetails.Where(detail => detail.LoanId == id);
+			}
+		}
+
+		public IEnumerable<LoanDetailModel> GetAll()
         {
             using (var connection = _dataAccess.GetConnection())
             {

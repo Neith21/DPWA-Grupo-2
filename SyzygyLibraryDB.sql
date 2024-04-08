@@ -203,6 +203,18 @@ BEGIN
 END;
 GO
 
+CREATE OR ALTER PROCEDURE spLoanDetails_GetAllSpecific
+	@LoanId INT
+AS
+BEGIN
+	SELECT ld.DetailId, ld.Quantity, ld.LoanId, b.Title
+	FROM LoanDetails ld
+	INNER JOIN Books b
+	ON ld.BookId = b.BookId
+	WHERE ld.LoanId = @LoanId;
+END;
+GO
+
 CREATE OR ALTER PROCEDURE spLoanDetails_GetById
 	@DetailId INT
 AS

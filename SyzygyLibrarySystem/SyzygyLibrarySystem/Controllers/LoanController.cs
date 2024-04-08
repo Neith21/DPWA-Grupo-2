@@ -10,20 +10,27 @@ namespace SyzygyLibrarySystem.Controllers
 	public class LoanController : Controller
 	{
         private readonly ILoanRepository _loanRepository;
+        private readonly ILoanDetailRepository _loanDetailRepository;
 
-        public LoanController(ILoanRepository loanRepository)
-        {
-            _loanRepository = loanRepository;
-        }
+		public LoanController(ILoanRepository loanRepository, ILoanDetailRepository loanDetailRepository)
+		{
+			_loanRepository = loanRepository;
+			_loanDetailRepository = loanDetailRepository;
+		}
 
-        // GET: LoanController
-        public ActionResult Index()
+		// GET: LoanController
+		public ActionResult Index()
         {
             return View(_loanRepository.GetAll());
         }
 
-        // GET: LoanController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult GetAllLoanDetails(int id)
+        {
+			return View(_loanDetailRepository.GetSpecificById(id));
+		}
+
+		// GET: LoanController/Details/5
+		public ActionResult Details(int id)
         {
             return View();
         }

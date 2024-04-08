@@ -1,17 +1,17 @@
-﻿@model IEnumerable<LoanModel>
+﻿@model IEnumerable<LoanDetailModel>
 @{
-	ViewData["Title"] = "Listado de Préstamos";
+	ViewData["Title"] = "Detalles de Préstamos";
 }
 
-<h1 style="text-align:center">Listado de Préstamos</h1>
+<h1 style="text-align:center">Detalles de Préstamos</h1>
 
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
 
 			<div class="mb-3 mb-3">
-				<a asp-action="Create" asp-controller="Loan" class="btn btn-success">
-					Nuevo Préstamo
+				<a asp-action="Create" asp-controller="LoanDetail" class="btn btn-success">
+					Añadir libro al préstamo
 				</a>
 			</div>
 
@@ -22,45 +22,34 @@
 				</div>
 			}
 
-			<table class="table table-bordered table-striped table-responsive" id="loanTable">
+			<table class="table table-bordered table-striped table-responsive" id="loanDetailTable">
 				<thead>
 					<tr>
+						<td>Detalle ID</td>
 						<td>Préstamo ID</td>
-						<td>Código del estudiante</td>
-						<td>Fecha del préstamo</td>
-						<td>Fecha de devolución</td>
-						<td>Estado del préstamo</td>
-						<td>Detalles</td>
+						<td>Libro</td>
+						<td>Cantidad prestada</td>
 						<td>Acciones</td>
 					</tr>
 				</thead>
 				<tbody>
-					@foreach (var loan in Model)
+					@foreach (var loanDetail in Model)
 					{
 						<tr>
-							<td>@Html.DisplayFor(item => loan.LoanId)</td>
-							<td>@Html.DisplayFor(item => loan.StudentCode)</td>
-							<td>@Html.DisplayFor(item => loan.LoanDate)</td>
-							<td>@Html.DisplayFor(item => loan.ReturnDate)</td>
-							<td>@Html.DisplayFor(item => loan.LoanStatus)</td>
+							<td>@Html.DisplayFor(item => loanDetail.DetailId)</td>
+							<td>@Html.DisplayFor(item => loanDetail.LoanId)</td>
+							<td>@loanDetail.Book?.Title</td>
+							<td>@Html.DisplayFor(item => loanDetail.Quantity)</td>
 							<td>
-								<a asp-controller="Loan"
-								   asp-action="GetAllLoanDetails"
-								   asp-route-id="@loan.LoanId"
-								   class="btn btn-primary">
-									Detalles
-								</a>
-							</td>
-							<td>
-								<a asp-controller="Loan"
+								<a asp-controller="LoanDetail"
 								   asp-action="Edit"
-								   asp-route-id="@loan.LoanId"
+								   asp-route-id="@loanDetail.DetailId"
 								   class="btn btn-primary">
 									Editar
 								</a>
-								<a asp-controller="Loan"
+								<a asp-controller="LoanDetail"
 								   asp-action="Delete"
-								   asp-route-id="@loan.LoanId"
+								   asp-route-id="@loanDetail.DetailId"
 								   class="btn btn-danger">
 									Eliminar
 								</a>
@@ -76,7 +65,7 @@
 @section Scripts {
 	<script>
 		$(document).ready(function () {
-			$("#loanTable").DataTable({
+			$("#loanDetailTable").DataTable({
 				dom: 'Bfrtip',
 				buttons: [
 					{
@@ -100,7 +89,7 @@
 				],
 				columnDefs: [
 					{
-						targets: 5,
+						targets: 4,
 						orderable: false,
 						searchable: false
 					}

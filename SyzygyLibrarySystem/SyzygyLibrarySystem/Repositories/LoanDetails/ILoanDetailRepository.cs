@@ -10,5 +10,6 @@ namespace SyzygyLibrarySystem.Repositories.LoanDetails
 		IEnumerable<LoanDetailModel> GetAll();
 		IEnumerable<BookModel> GetAllBooks();
 		LoanDetailModel? GetById(int id);
+		IEnumerable<LoanDetailModel> GetSpecificById(int id);
 	}
 }
