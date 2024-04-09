@@ -1,0 +1,72 @@
+﻿@model StudentModel
+
+@{
+    ViewData["Title"] = "Nuevo Estudiante";
+}
+
+<h1 style="text-align:center">Nuevo Estudiante</h1>
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Create" onsubmit="return confirmAction();">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Code" class="form-label">Código</label>
+                    <input asp-for="Code" type="text" class="form-control" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="StudentName" class="form-label">Nombre</label>
+                    <input asp-for="StudentName" type="text" class="form-control" />
+                    <span asp-validation-for="StudentName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="LastName" class="form-label">Apellidos</label>
+                    <input asp-for="LastName" type="text" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Address" class="form-label">Dirección</label>
+                    <input asp-for="Address" type="text" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Correo electrónico</label>
+                    <input asp-for="Email" type="text" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Phone" class="form-label">Teléfono</label>
+                    <input asp-for="Phone" type="text" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+
+                    <a asp-action="Index" class="btn btn-danger">Regresar al listado</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function confirmAction() {
+            if (confirm('¿Estás seguro de agregar este registro estudiante?')) {
+                return true;
+            } else {
+                window.location.href = '@Url.Action("Index", "Student")';
+                return false;
+            }
+        }
+    </script>
+}

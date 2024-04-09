@@ -1,0 +1,71 @@
+﻿@model StudentModel
+
+@{
+    ViewData["Title"] = "Eliminar estudiante";
+}
+
+<div style="text-align: center;">
+    <h1>Eliminar estudiante</h1>
+    <h3>¿Está seguro que desea eliminar?</h3>
+
+    <div style="margin: 0 auto; width: fit-content;">
+        <table style="text-align: justify; border-collapse: separate; border-spacing: 0 8px;">
+            <tbody>
+                <tr>
+                    <th style="padding-bottom: 8px;">
+                        @Html.DisplayNameFor(model => model.Code)
+                    </th>
+                    <td style="padding: 0px 0px 8px 10px;">
+                        @Html.DisplayFor(model => model.Code)
+                    </td>
+                </tr>
+                <tr>
+                    <th style="padding-bottom: 8px;">
+                        @Html.DisplayNameFor(model => model.StudentName)
+                    </th>
+                    <td style="padding: 0px 0px 8px 10px;">
+                        @Html.DisplayFor(model => model.StudentName)
+                    </td>
+                </tr>
+                <tr>
+                    <th style="padding-bottom: 8px;">
+                        @Html.DisplayNameFor(model => model.LastName)
+                    </th>
+                    <td style="padding: 0px 0px 8px 10px;">
+                        @Html.DisplayFor(model => model.LastName)
+                    </td>
+                </tr>
+                <tr>
+                    <th style="padding-bottom: 8px;">
+                        @Html.DisplayNameFor(model => model.Address)
+                    </th>
+                    <td style="padding: 0px 0px 8px 10px;">
+                        @Html.DisplayFor(model => model.Address)
+                    </td>
+                </tr>
+                <tr>
+                    <th style="padding-bottom: 8px;">
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <td style="padding: 0px 0px 8px 10px;">
+                        @Html.DisplayFor(model => model.Email)
+                    </td>
+                </tr>
+                <tr>
+                    <th style="padding-bottom: 8px;">
+                        @Html.DisplayNameFor(model => model.Phone)
+                    </th>
+                    <td style="padding: 0px 0px 8px 10px;">
+                        @Html.DisplayFor(model => model.Phone)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form asp-action="Delete">
+            <input asp-for="Code" type="hidden" class="form-control" />
+            <input type="submit" value="Eliminar" class="btn btn-danger" />
+            <a asp-action="Index" class="btn btn-primary">Regresar al listado</a>
+        </form>
+    </div>
+</div>

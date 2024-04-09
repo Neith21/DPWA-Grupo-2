@@ -128,6 +128,72 @@ BEGIN
 END;
 GO
 
+--SP Students--
+--SP Para eliminar
+CREATE OR ALTER PROCEDURE spStudents_Delete
+	@Code VARCHAR(9)
+AS
+BEGIN
+	DELETE FROM Students
+	WHERE Code = @Code;
+END;
+GO
+
+--SP Para listar
+CREATE OR ALTER PROCEDURE spStudents_GetAll
+AS
+BEGIN
+	SELECT Code, StudentName, LastName, Address, Email, Phone
+	FROM Students;
+END;
+GO
+
+--SP Para obtener registro especifico
+CREATE OR ALTER PROCEDURE spStudents_GetById
+	@Code VARCHAR(9)
+AS
+BEGIN
+	SELECT Code, StudentName, LastName, Address, Email, Phone
+	FROM Students
+	WHERE Code = @Code;
+END;
+GO
+
+--SP Para insertar
+CREATE OR ALTER PROCEDURE spStudents_Insert
+	@Code VARCHAR(9),
+	@StudentName NVARCHAR,
+    @LastName NVARCHAR(50),
+    @Address VARCHAR(175),
+    @Email NVARCHAR(100),
+    @Phone VARCHAR(20)
+AS
+BEGIN
+	INSERT INTO Students(Code, StudentName, LastName, Address, Email, Phone)
+	VALUES(@Code, @StudentName, @LastName, @Address, @Email, @Phone);
+END;
+GO
+
+--SP Para actualizar
+CREATE OR ALTER PROCEDURE spStudents_Update
+	@Code VARCHAR(9),
+    @StudentName VARCHAR(50),
+	@LastName VARCHAR(50),
+    @Address VARCHAR(175),
+	@Email VARCHAR(100),
+    @Phone VARCHAR(20)
+AS
+BEGIN
+	UPDATE Students
+	SET StudentName = @StudentName,
+		LastName = @LastName,
+		Address = @Address,
+		Email =  @Email,
+		Phone = @Phone
+	WHERE Code = @Code
+END;
+GO
+
 --Estos son los otros sp, no guiarse de estos c:
 --SP Loans--
 CREATE OR ALTER PROCEDURE spLoans_Delete
