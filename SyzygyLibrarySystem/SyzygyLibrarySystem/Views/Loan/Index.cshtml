@@ -82,33 +82,36 @@
 					{
 						extend: 'csv',
 						exportOptions: {
-							columns: ':not(:last-child)'
+							columns: [0, 1, 2, 3, 4]
 						}
 					},
 					{
 						extend: 'pdf',
 						exportOptions: {
-							columns: ':not(:last-child)'
+							columns: [0, 1, 2, 3, 4]
 						}
 					},
 					{
 						extend: 'excel',
 						exportOptions: {
-							columns: ':not(:last-child)'
+							columns: [0, 1, 2, 3, 4]
 						}
 					}
 				],
-				columnDefs: [
-					{
-						targets: 5,
-						orderable: false,
-						searchable: false
-					}
+				columns: [
+					null,
+					null,
+					null,
+					null,
+					null,
+					{ orderable: false, searchable: false },
+					{ orderable: false, searchable: false }
 				],
 				language: {
 					url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
 				}
 			});
 		});
+
 	</script>
 }

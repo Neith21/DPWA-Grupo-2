@@ -3,7 +3,7 @@
 	ViewData["Title"] = "Detalles de Préstamos";
 }
 
-<h1 style="text-align:center">Detalles de Préstamos</h1>
+<h1 style="text-align:center">Añadir libro a este préstamo</h1>
 
 <div class="container">
 	<div class="row">
@@ -44,12 +44,14 @@
 								<a asp-controller="LoanDetail"
 								   asp-action="Edit"
 								   asp-route-id="@loanDetail.DetailId"
+								   asp-route-id="@ViewBag.LoanId"
 								   class="btn btn-primary">
 									Editar
 								</a>
 								<a asp-controller="LoanDetail"
 								   asp-action="Delete"
 								   asp-route-id="@loanDetail.DetailId"
+								   asp-route-id="@ViewBag.LoanId"
 								   class="btn btn-danger">
 									Eliminar
 								</a>

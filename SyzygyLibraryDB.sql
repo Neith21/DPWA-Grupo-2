@@ -204,6 +204,16 @@ BEGIN
 	WHERE LoanId = @LoanId;
 END;
 GO
+
+CREATE OR ALTER PROCEDURE spLoans_GetLast
+AS
+BEGIN
+    DECLARE @LastLoanId INT;
+    SELECT @LastLoanId = MAX(LoanId)
+    FROM Loans;
+END;
+GO
+
 CREATE OR ALTER PROCEDURE spLoans_GetAll
 AS
 BEGIN
@@ -454,3 +464,4 @@ BEGIN
     FROM inserted i
     WHERE LoanDetails.DetailId = i.DetailId;
 END;
+GO

@@ -53,8 +53,8 @@ namespace SyzygyLibrarySystem.Controllers
 
 				TempData["message"] = "Datos guardados correctamente.";
 
-				return RedirectToAction(nameof(Index));
-			}
+                return RedirectToAction("GetAllLoanDetails", "Loan", new { id = loanDetail.LoanId });
+            }
 			catch (Exception ex)
 			{
 				TempData["message"] = ex.Message;

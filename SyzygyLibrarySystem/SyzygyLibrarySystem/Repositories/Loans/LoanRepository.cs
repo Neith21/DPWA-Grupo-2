@@ -14,6 +14,19 @@ namespace SyzygyLibrarySystem.Repositories.Loans
             _dataAccess = dataAccess;
         }
 
+        public int GetLast()
+        {
+            using (var connection = _dataAccess.GetConnection())
+            {
+                string storeProcedure = "spLoans_GetLast";
+                int lastLoanId;
+
+                lastLoanId = connection.ExecuteScalar<int>(storeProcedure, commandType: CommandType.StoredProcedure);
+
+                return lastLoanId;
+            }
+        }
+
         public IEnumerable<LoanModel> GetAll()
         {
             using (var connection = _dataAccess.GetConnection())

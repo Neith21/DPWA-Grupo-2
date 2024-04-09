@@ -9,5 +9,6 @@ namespace SyzygyLibrarySystem.Repositories.Loans
         void Edit(LoanModel loan);
         IEnumerable<LoanModel> GetAll();
         LoanModel? GetById(int id);
+        int GetLast();
     }
 }

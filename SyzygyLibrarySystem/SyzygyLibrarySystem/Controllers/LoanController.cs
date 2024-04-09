@@ -54,7 +54,9 @@ namespace SyzygyLibrarySystem.Controllers
 
                 TempData["message"] = "Datos guardados correctamente.";
 
-                return RedirectToAction(nameof(Index));
+                int lastLoanId = _loanRepository.GetLast();
+
+                return RedirectToAction("GetAllLoanDetails", new { id = lastLoanId });
             }
             catch (SqlException ex) when (ex.Number == 547)
             {
