@@ -34,16 +34,16 @@ namespace SyzygyLibrarySystem.Controllers
 			return View();
 		}
 
-		// GET: LoanDetailController/Create
-		public ActionResult Create()
-		{
-			ViewBag.Books = _booksList;
+        // GET: LoanDetailController/Create
+        public ActionResult Create()
+        {
+            ViewBag.Books = _booksList;
 
-			return View();
-		}
+            return View();
+        }
 
-		// POST: LoanDetailController/Create
-		[HttpPost]
+        // POST: LoanDetailController/Create
+        [HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Create(LoanDetailModel loanDetail)
 		{

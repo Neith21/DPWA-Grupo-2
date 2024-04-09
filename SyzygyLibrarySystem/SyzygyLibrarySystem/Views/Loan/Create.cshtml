@@ -7,6 +7,13 @@
 <h1 style="text-align:center">Nuevo Préstamo</h1>
 <hr />
 
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-primary" role="alert">
+        @TempData["message"]
+    </div>
+}
+
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -21,12 +28,12 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="LoanDate" class="form-label">Fecha del préstamo</label>
-                    <input asp-for="LoanDate" type="date" class="form-control" />
+                    <input asp-for="LoanDate" type="date" class="form-control" id="loanDateInput" />
                     <span asp-validation-for="LoanDate" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <label asp-for="ReturnDate" class="form-label">Fecha de devolución</label>
-                    <input asp-for="ReturnDate" type="date" class="form-control" />
+                    <input asp-for="ReturnDate" type="date" class="form-control" id="returnDateInput" />
                     <span asp-validation-for="ReturnDate" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
@@ -50,6 +57,11 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        var today = new Date().toISOString().split('T')[0];
+
+        document.getElementById('loanDateInput').setAttribute('min', today);
+        document.getElementById('returnDateInput').setAttribute('min', today);
+
         function confirmAction() {
             if (confirm('¿Estás seguro de hacer este préstamo?')) {
                 return true;

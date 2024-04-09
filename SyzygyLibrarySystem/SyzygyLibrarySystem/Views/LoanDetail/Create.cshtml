@@ -16,7 +16,7 @@
 
                 <div class="mb-3">
                     <label asp-for="LoanId" class="form-label">Préstamo ID</label>
-                    <input asp-for="LoanId" type="text" class="form-control" />
+                    <input asp-for="LoanId" type="text" class="form-control" readonly="readonly" id="loanIdInput" />
                     <span asp-validation-for="LoanId" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
@@ -53,6 +53,11 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+
+        document.getElementById('loanIdInput').value = id;
+
         function confirmAction() {
             if (confirm('¿Estás seguro de añadir este libro al préstamo?')) {
                 return true;

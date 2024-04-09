@@ -6,66 +6,72 @@
 <h1 style="text-align:center">Listado de Libros</h1>
 
 <div class="container">
-	<div class="row">
-		<div class="col-md-12">
+    <div class="row d-flex">
+        <div class="col-6">
+            <div class="mb-3">
+                <a asp-action="Create" asp-controller="Book" class="btn btn-success">
+                    Nuevo Libro
+                </a>
+            </div>
+        </div>
+        <div class="col-6 text-end">
+            <div class="mb-3">
+                <a asp-action="Create" asp-controller="Loan" class="btn btn-success">
+                    Nuevo Préstamo
+                </a>
+            </div>
+        </div>
+    </div>
 
-			<div class="mb-3 mb-3">
-				<a asp-action="Create" asp-controller="Book" class="btn btn-success">
-					Nuevo Libro
-				</a>
-			</div>
+    @if (TempData["message"] != null)
+    {
+        <div class="alert alert-primary" role="alert">
+            @TempData["message"]
+        </div>
+    }
 
-			@if (TempData["message"] != null)
-			{
-				<div class="alert alert-primary" role="alert">
-					@TempData["message"]
-				</div>
-			}
-
-			<table class="table table-bordered table-striped table-responsive" id="bookTable">
-				<thead>
-					<tr>
-						<td>Book ID</td>
-						<td>Título</td>
-						<td>Autor</td>
-						<td>Editorial</td>
-						<td>Año de publicación</td>
-						<td>Género</td>
-						<td>Disponibles</td>
-						<td>Acciones</td>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var book in Model)
-					{
-						<tr>
-							<td>@Html.DisplayFor(item => book.BookId)</td>
-							<td>@Html.DisplayFor(item => book.Title)</td>
-							<td>@book.Author?.AuthorName</td>
-							<td>@book.Publisher?.PublisherName</td>
-							<td>@Html.DisplayFor(item => book.PublicationYear)</td>
-							<td>@Html.DisplayFor(item => book.Genre)</td>
-							<td>@Html.DisplayFor(item => book.Quantity)</td>
-							<td>
-								<a asp-controller="Book"
-								   asp-action="Edit"
-								   asp-route-id="@book.BookId"
-								   class="btn btn-primary">
-									Editar
-								</a>
-								<a asp-controller="Book"
-								   asp-action="Delete"
-								   asp-route-id="@book.BookId"
-								   class="btn btn-danger">
-									Eliminar
-								</a>
-							</td>
-						</tr>
-					}
-				</tbody>
-			</table>
-		</div>
-	</div>
+    <table class="table table-bordered table-striped table-responsive" id="bookTable">
+        <thead>
+            <tr>
+                <td>Book ID</td>
+                <td>Título</td>
+                <td>Autor</td>
+                <td>Editorial</td>
+                <td>Año de publicación</td>
+                <td>Género</td>
+                <td>Disponibles</td>
+                <td>Acciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(item => book.BookId)</td>
+                    <td>@Html.DisplayFor(item => book.Title)</td>
+                    <td>@book.Author?.AuthorName</td>
+                    <td>@book.Publisher?.PublisherName</td>
+                    <td>@Html.DisplayFor(item => book.PublicationYear)</td>
+                    <td>@Html.DisplayFor(item => book.Genre)</td>
+                    <td>@Html.DisplayFor(item => book.Quantity)</td>
+                    <td>
+                        <a asp-controller="Book"
+                           asp-action="Edit"
+                           asp-route-id="@book.BookId"
+                           class="btn btn-primary">
+                            Editar
+                        </a>
+                        <a asp-controller="Book"
+                           asp-action="Delete"
+                           asp-route-id="@book.BookId"
+                           class="btn btn-danger">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 @section Scripts {

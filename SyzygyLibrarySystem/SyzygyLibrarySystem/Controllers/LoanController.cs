@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Data.SqlClient;
 using SyzygyLibrarySystem.Models;
 using SyzygyLibrarySystem.Repositories.LoanDetails;
 using SyzygyLibrarySystem.Repositories.Loans;
@@ -26,11 +27,12 @@ namespace SyzygyLibrarySystem.Controllers
 
         public ActionResult GetAllLoanDetails(int id)
         {
+			ViewBag.LoanId = id;
 			return View(_loanDetailRepository.GetSpecificById(id));
 		}
 
-		// GET: LoanController/Details/5
-		public ActionResult Details(int id)
+        // GET: LoanController/Details/5
+        public ActionResult Details(int id)
         {
             return View();
         }
@@ -53,6 +55,12 @@ namespace SyzygyLibrarySystem.Controllers
                 TempData["message"] = "Datos guardados correctamente.";
 
                 return RedirectToAction(nameof(Index));
+            }
+            catch (SqlException ex) when (ex.Number == 547)
+            {
+                TempData["message"] = "Posiblemente el estudiante no esté registrado.";
+
+                return View(loan);
             }
             catch (Exception ex)
             {
