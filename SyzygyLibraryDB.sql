@@ -54,14 +54,7 @@ CREATE TABLE LoanDetails(
     LoanId INT NOT NULL FOREIGN KEY REFERENCES Loans(LoanId) ON DELETE CASCADE,
     BookId INT NOT NULL FOREIGN KEY REFERENCES Books(BookId)
 );
-
-INSERT INTO Authors
-VALUES('Ariel', 'El Salvador', NULL);
 GO
-INSERT INTO Authors
-VALUES('SVV', 'El Salvador', NULL);
-GO
-
 --SP Publishers Pueden guiarse de estos procedimientos almacenados para hacer Authors y Studens--
 
 --SP Para eliminar
