@@ -1,0 +1,103 @@
+﻿@model IEnumerable<AuthorModel>
+@{
+    ViewData["Title"] = "Listado de Autores";
+}
+
+<h1 style="text-align:center">Listado de Autores</h1>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="mb-3 mb-3">
+				<a asp-action="Create" asp-controller="Author" class="btn btn-success">
+					Nuevo Autor
+				</a>
+			</div>
+
+			@if (TempData["message"] != null)
+			{
+				<div class="alert alert-primary" role="alert">
+					@TempData["message"]
+				</div>
+			}
+
+			<table class="table table-bordered table-striped table-responsive" id="authorTable">
+				<thead>
+					<tr>
+						<td>Id Autor</td>
+						<td>Nombre Autor</td>
+						<td>Nacionalidad</td>
+						<td>Fecha de Nacimiento</td>
+						<td>Acciones</td>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var author in Model)
+					{
+						<tr>
+							<td>@Html.DisplayFor(item => author.AuthorId)</td>
+							<td>@Html.DisplayFor(item => author.AuthorName)</td>
+							<td>@Html.DisplayFor(item => author.Nationality)</td>
+							<td>@Html.DisplayFor(item => author.BirthDate)</td>
+							<td>
+								<a asp-controller="Author"
+								   asp-action="Edit"
+								   asp-route-id="@author.AuthorId"
+								   class="btn btn-primary">
+									Editar
+								</a>
+								<a asp-controller="Author"
+								   asp-action="Delete"
+								   asp-route-id="@author.AuthorId"
+								   class="btn btn-danger">
+									Eliminar
+								</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$("#authorTable").DataTable({
+				dom: 'Bfrtip',
+				buttons: [
+					{
+						extend: 'csv',
+						exportOptions: {
+							columns: ':not(:last-child)'
+						}
+					},
+					{
+						extend: 'pdf',
+						exportOptions: {
+							columns: ':not(:last-child)'
+						}
+					},
+					{
+						extend: 'excel',
+						exportOptions: {
+							columns: ':not(:last-child)'
+						}
+					}
+				],
+				columnDefs: [
+					{
+						targets: 3,
+						orderable: false,
+						searchable: false
+					}
+				],
+				language: {
+					url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+				}
+			});
+		});
+	</script>
+}

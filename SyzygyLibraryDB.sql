@@ -57,7 +57,7 @@ CREATE TABLE LoanDetails(
 GO
 
 INSERT INTO Students
-VALUES('U20210463', 'Ariel', 'Chávez', NULL, 'cristian.1945theend@gmail.com', NULL);
+VALUES('U20210463', 'Ariel', 'Chï¿½vez', NULL, 'cristian.1945theend@gmail.com', NULL);
 GO
 
 INSERT INTO Authors
@@ -190,7 +190,7 @@ BEGIN
 		Address = @Address,
 		Email =  @Email,
 		Phone = @Phone
-	WHERE Code = @Code
+	WHERE Code=@Code
 END;
 GO
 
@@ -221,6 +221,7 @@ BEGIN
 	FROM Loans;
 END;
 GO
+
 CREATE OR ALTER PROCEDURE spLoans_GetById
 	@LoanId INT
 AS
@@ -230,6 +231,7 @@ BEGIN
 	WHERE LoanId = @LoanId;
 END;
 GO
+
 CREATE OR ALTER PROCEDURE spLoans_Insert
 	@StudentCode VARCHAR(9),
     @LoanDate DATE,
@@ -241,6 +243,7 @@ BEGIN
 	VALUES(@StudentCode, @LoanDate, @ReturnDate, @LoanStatus);
 END;
 GO
+
 CREATE OR ALTER PROCEDURE spLoans_Update
 	@LoanId INT,
     @StudentCode VARCHAR(9),
@@ -410,12 +413,63 @@ BEGIN
 END;
 GO
 
+
+/**/
 --SP Authors--
 CREATE OR ALTER PROCEDURE spAuthors_GetAll
 AS
 BEGIN
 	SELECT AuthorId, AuthorName, Nationality, BirthDate 
 	FROM Authors;
+END;
+GO
+
+--SP Para obtener registro especifico
+CREATE OR ALTER PROCEDURE spAuthors_GetById
+	@AuthorId INT
+AS
+BEGIN
+	SELECT AuthorId, AuthorName, Nationality, BirthDate
+	FROM Authors
+	WHERE AuthorId = @AuthorId;
+END;
+GO
+
+--SP Para insertar
+CREATE OR ALTER PROCEDURE spAuthors_Insert
+	@AuthorName NVARCHAR(100),
+    @Nationality VARCHAR(100),
+	@BirthDate DATE
+AS
+BEGIN
+	INSERT INTO Authors(AuthorName, Nationality, BirthDate)
+	VALUES(@AuthorName, @Nationality, @BirthDate);
+END;
+GO
+
+--SP Para actualizar
+CREATE OR ALTER PROCEDURE spAuthors_Update
+	@AuthorId INT,
+	@AuthorName NVARCHAR(100),
+    @Nationality VARCHAR(100),
+	@BirthDate DATE
+AS
+BEGIN
+	UPDATE Authors
+	SET AuthorName = @AuthorName,
+		Nationality = @Nationality,
+		BirthDate = @BirthDate
+	WHERE AuthorId = @AuthorId
+END;
+GO
+
+--SP Para eliminar
+CREATE OR ALTER PROCEDURE sp_AuthorsDelete
+	@AuthorId INT
+AS
+BEGIN
+	DELETE FROM Authors
+	WHERE AuthorId = @AuthorId;
 END;
 GO
 
@@ -448,7 +502,7 @@ ON LoanDetails
 INSTEAD OF UPDATE
 AS
 BEGIN
-    -- Actualizar la cantidad de libros y los detalles del préstamo
+    -- Actualizar la cantidad de libros y los detalles del prï¿½stamo
     UPDATE Books
     SET Quantity = Quantity - COALESCE((SELECT SUM(CASE WHEN i.Quantity > d.Quantity THEN (i.Quantity - d.Quantity) ELSE 0 END) 
                                          FROM inserted i JOIN deleted d ON i.DetailId = d.DetailId 
@@ -458,7 +512,7 @@ BEGIN
                                          WHERE Books.BookId = d.BookId), 0)
     WHERE BookId IN (SELECT BookId FROM inserted);
 
-    -- Actualizar los detalles del préstamo
+    -- Actualizar los detalles del prï¿½stamo
     UPDATE LoanDetails
     SET Quantity = i.Quantity
     FROM inserted i

@@ -1,4 +1,5 @@
 using SyzygyLibrarySystem.Data;
+using SyzygyLibrarySystem.Repositories.Authors;
 using SyzygyLibrarySystem.Repositories.Books;
 using SyzygyLibrarySystem.Repositories.LoanDetails;
 using SyzygyLibrarySystem.Repositories.Loans;
@@ -20,6 +21,7 @@ internal class Program
         builder.Services.AddScoped<ILoanDetailRepository, LoanDetailRepository>();
         builder.Services.AddScoped<IBookRepository, BookRepository>();
         builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+		builder.Services.AddScoped<IAuthorsRepository, AuthorsRepository>();
 
         var app = builder.Build();
 
