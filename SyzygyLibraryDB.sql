@@ -51,24 +51,15 @@ GO
 CREATE TABLE LoanDetails(
     DetailId INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
     Quantity INT NOT NULL,
-	LoanId INT NOT NULL FOREIGN KEY REFERENCES Loans(LoanId),
+    LoanId INT NOT NULL FOREIGN KEY REFERENCES Loans(LoanId) ON DELETE CASCADE,
     BookId INT NOT NULL FOREIGN KEY REFERENCES Books(BookId)
 );
-GO
-
-INSERT INTO Students
-VALUES('U20210463', 'Ariel', 'Chï¿½vez', NULL, 'cristian.1945theend@gmail.com', NULL);
-GO
 
 INSERT INTO Authors
 VALUES('Ariel', 'El Salvador', NULL);
 GO
 INSERT INTO Authors
 VALUES('SVV', 'El Salvador', NULL);
-GO
-
-INSERT INTO Books
-VALUES('Hola Mundo', NULL, NULL, 25, 1, 1);
 GO
 
 --SP Publishers Pueden guiarse de estos procedimientos almacenados para hacer Authors y Studens--
@@ -190,7 +181,65 @@ BEGIN
 		Address = @Address,
 		Email =  @Email,
 		Phone = @Phone
-	WHERE Code=@Code
+	WHERE Code = @Code
+END;
+GO
+
+--SP Authors--
+CREATE OR ALTER PROCEDURE spAuthors_GetAll
+AS
+BEGIN
+	SELECT AuthorId, AuthorName, Nationality, BirthDate 
+	FROM Authors;
+END;
+GO
+
+--SP Para obtener registro especifico
+CREATE OR ALTER PROCEDURE spAuthors_GetById
+	@AuthorId INT
+AS
+BEGIN
+	SELECT AuthorId, AuthorName, Nationality, BirthDate
+	FROM Authors
+	WHERE AuthorId = @AuthorId;
+END;
+GO
+
+--SP Para insertar
+CREATE OR ALTER PROCEDURE spAuthors_Insert
+	@AuthorName NVARCHAR(100),
+    @Nationality VARCHAR(100),
+	@BirthDate DATE
+AS
+BEGIN
+	INSERT INTO Authors(AuthorName, Nationality, BirthDate)
+	VALUES(@AuthorName, @Nationality, @BirthDate);
+END;
+GO
+
+--SP Para actualizar
+CREATE OR ALTER PROCEDURE spAuthors_Update
+	@AuthorId INT,
+	@AuthorName NVARCHAR(100),
+    @Nationality VARCHAR(100),
+	@BirthDate DATE
+AS
+BEGIN
+	UPDATE Authors
+	SET AuthorName = @AuthorName,
+		Nationality = @Nationality,
+		BirthDate = @BirthDate
+	WHERE AuthorId = @AuthorId
+END;
+GO
+
+--SP Para eliminar
+CREATE OR ALTER PROCEDURE sp_AuthorsDelete
+	@AuthorId INT
+AS
+BEGIN
+	DELETE FROM Authors
+	WHERE AuthorId = @AuthorId;
 END;
 GO
 
@@ -221,7 +270,6 @@ BEGIN
 	FROM Loans;
 END;
 GO
-
 CREATE OR ALTER PROCEDURE spLoans_GetById
 	@LoanId INT
 AS
@@ -231,7 +279,6 @@ BEGIN
 	WHERE LoanId = @LoanId;
 END;
 GO
-
 CREATE OR ALTER PROCEDURE spLoans_Insert
 	@StudentCode VARCHAR(9),
     @LoanDate DATE,
@@ -243,7 +290,6 @@ BEGIN
 	VALUES(@StudentCode, @LoanDate, @ReturnDate, @LoanStatus);
 END;
 GO
-
 CREATE OR ALTER PROCEDURE spLoans_Update
 	@LoanId INT,
     @StudentCode VARCHAR(9),
@@ -319,18 +365,18 @@ GO
 
 CREATE OR ALTER PROCEDURE spLoanDetails_Update
 (
-	@DetailId INT,
-	@Quantity INT,
+    @DetailId INT,
+    @Quantity INT,
     @LoanId INT,
     @BookId INT
 )
 AS
 BEGIN
-	UPDATE LoanDetails
-	SET Quantity = @Quantity,
-		LoanId = @LoanId,
-		BookId = @BookId
-	WHERE DetailId = @DetailId;
+    UPDATE LoanDetails
+    SET Quantity = @Quantity,
+        LoanId = @LoanId,
+        BookId = @BookId
+    WHERE DetailId = @DetailId;
 END;
 GO
 
@@ -413,8 +459,6 @@ BEGIN
 END;
 GO
 
-
-/**/
 --SP Authors--
 CREATE OR ALTER PROCEDURE spAuthors_GetAll
 AS
@@ -424,67 +468,42 @@ BEGIN
 END;
 GO
 
---SP Para obtener registro especifico
-CREATE OR ALTER PROCEDURE spAuthors_GetById
-	@AuthorId INT
-AS
-BEGIN
-	SELECT AuthorId, AuthorName, Nationality, BirthDate
-	FROM Authors
-	WHERE AuthorId = @AuthorId;
-END;
-GO
-
---SP Para insertar
-CREATE OR ALTER PROCEDURE spAuthors_Insert
-	@AuthorName NVARCHAR(100),
-    @Nationality VARCHAR(100),
-	@BirthDate DATE
-AS
-BEGIN
-	INSERT INTO Authors(AuthorName, Nationality, BirthDate)
-	VALUES(@AuthorName, @Nationality, @BirthDate);
-END;
-GO
-
---SP Para actualizar
-CREATE OR ALTER PROCEDURE spAuthors_Update
-	@AuthorId INT,
-	@AuthorName NVARCHAR(100),
-    @Nationality VARCHAR(100),
-	@BirthDate DATE
-AS
-BEGIN
-	UPDATE Authors
-	SET AuthorName = @AuthorName,
-		Nationality = @Nationality,
-		BirthDate = @BirthDate
-	WHERE AuthorId = @AuthorId
-END;
-GO
-
---SP Para eliminar
-CREATE OR ALTER PROCEDURE sp_AuthorsDelete
-	@AuthorId INT
-AS
-BEGIN
-	DELETE FROM Authors
-	WHERE AuthorId = @AuthorId;
-END;
-GO
-
-
 --Triggers--
 CREATE OR ALTER TRIGGER SubtractBookQuantity
 ON LoanDetails
-AFTER INSERT
+INSTEAD OF INSERT
 AS
 BEGIN
-    UPDATE Books
-    SET Quantity = Quantity - (SELECT Quantity FROM inserted WHERE Books.BookId = inserted.BookId)
-    WHERE BookId IN (SELECT BookId FROM inserted);
+    DECLARE @BookId INT;
+    DECLARE @SubtractQuantity INT;
+
+    SELECT @BookId = BookId,
+           @SubtractQuantity = Quantity
+    FROM inserted;
+
+    DECLARE @RemainingQuantity INT;
+    SELECT @RemainingQuantity = (B.Quantity - @SubtractQuantity)
+    FROM Books B
+    WHERE B.BookId = @BookId;
+
+    IF @RemainingQuantity >= 0
+    BEGIN
+        UPDATE Books
+        SET Quantity = @RemainingQuantity
+        WHERE BookId = @BookId;
+
+        INSERT INTO LoanDetails (LoanId, BookId, Quantity)
+        SELECT LoanId, BookId, Quantity
+        FROM inserted;
+    END
+    ELSE
+    BEGIN
+        RAISERROR('La actualización resultaría en una cantidad negativa de libros para el libro con ID %d. No se realizó la actualización.', 16, 1, @BookId);
+        ROLLBACK TRANSACTION;
+    END;
 END;
 GO
+
 
 CREATE OR ALTER TRIGGER AddBookQuantity
 ON LoanDetails
@@ -502,7 +521,7 @@ ON LoanDetails
 INSTEAD OF UPDATE
 AS
 BEGIN
-    -- Actualizar la cantidad de libros y los detalles del prï¿½stamo
+    -- Actualizar la cantidad de libros y los detalles del préstamo
     UPDATE Books
     SET Quantity = Quantity - COALESCE((SELECT SUM(CASE WHEN i.Quantity > d.Quantity THEN (i.Quantity - d.Quantity) ELSE 0 END) 
                                          FROM inserted i JOIN deleted d ON i.DetailId = d.DetailId 
@@ -512,7 +531,7 @@ BEGIN
                                          WHERE Books.BookId = d.BookId), 0)
     WHERE BookId IN (SELECT BookId FROM inserted);
 
-    -- Actualizar los detalles del prï¿½stamo
+    -- Actualizar los detalles del préstamo
     UPDATE LoanDetails
     SET Quantity = i.Quantity
     FROM inserted i

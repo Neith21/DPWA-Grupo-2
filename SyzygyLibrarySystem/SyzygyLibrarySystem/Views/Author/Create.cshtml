@@ -6,13 +6,6 @@
 <h1 style="text-align:center">Agregar Autor</h1>
 <hr />
 
-@if (TempData["message"] != null)
-{
-    <div class="alert alert-primary" role="alert">
-        @TempData["message"]
-    </div>
-}
-
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -25,16 +18,14 @@
                     <input asp-for="AuthorName" type="text" class="form-control" />
                     <span asp-validation-for="AuthorName" class="text-danger"></span>
                 </div>
-
                 <div class="mb-3">
                     <label asp-for="Nationality" class="form-label">Nacionalidad</label>
                     <input asp-for="Nationality" type="text" class="form-control" />
                     <span asp-validation-for="Nationality" class="text-danger"></span>
                 </div>
-
-                <div class="form-group">
-                    <label asp-for="BirthDate" class="control-label">Fecha de Nacimiento</label>
-                    <input asp-for="BirthDate" type="date" class="form-control" id="authorDateInput" />
+                <div class="mb-3">
+                    <label asp-for="BirthDate" class="form-label">Fecha de Nacimiento</label>
+                    <input asp-for="BirthDate" type="date" class="form-control" />
                     <span asp-validation-for="BirthDate" class="text-danger"></span>
                 </div>
 
@@ -57,7 +48,7 @@
             if (confirm('¿Estás seguro de agregar este autor?')) {
                 return true;
             } else {
-                window.location.href = '@Url.Action("Index", "Publisher")';
+                window.location.href = '@Url.Action("Index", "Author")';
                 return false;
             }
         }

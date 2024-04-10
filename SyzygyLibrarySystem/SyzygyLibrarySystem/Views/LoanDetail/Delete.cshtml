@@ -46,10 +46,36 @@
             </tbody>
         </table>
 
-        <form asp-action="Delete">
-            <input asp-for="DetailId" type="hidden" class="form-control" />
-            <input type="submit" value="Eliminar" class="btn btn-danger" />
-            <a asp-action="Index" class="btn btn-primary">Regresar al listado</a>
-        </form>
+        <div class="d-flex justify-content-between">
+            <form id="deleteForm" asp-action="Delete" style="margin: 0 20px;">
+                <input asp-for="DetailId" type="hidden" class="form-control" />
+                <input type="submit" value="Eliminar" class="btn btn-danger" />
+            </form>
+            <a id="regresarLink" class="btn btn-primary">Regresar al listado</a>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById('regresarLink').addEventListener('click', function () {
+            var url = '@Url.Action("GetAllLoanDetails", "Loan", new { id = Model.LoanId })';
+            window.location.href = url;
+        });
+
+        document.getElementById('deleteForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var form = event.target;
+            fetch(form.action, {
+                method: form.method,
+                body: new FormData(form)
+            }).then(response => {
+                if (response.ok) {
+                    var url = '@Url.Action("GetAllLoanDetails", "Loan", new { id = Model.LoanId })';
+                    window.location.href = url;
+                }
+            }).catch(error => console.error('Error al eliminar el detalle:', error));
+        });
+    </script>
+}

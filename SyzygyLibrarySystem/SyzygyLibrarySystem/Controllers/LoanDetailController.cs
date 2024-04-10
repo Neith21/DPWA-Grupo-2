@@ -83,36 +83,39 @@ namespace SyzygyLibrarySystem.Controllers
 				loanDetail?.Book?.BookId
 			);
 
-			ViewBag.Books = _booksList;
+            TempData["message"] = "Sólo puede editar la cantidad de libros.";
+
+            ViewBag.Books = _booksList;
 
 			return View(loanDetail);
 		}
 
-		// POST: LoanDetailController/Edit/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Edit(LoanDetailModel loanDetail)
-		{
-			try
-			{
-				_loanDetailRepository.Edit(loanDetail);
+        // POST: LoanDetailController/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(LoanDetailModel loanDetail, int LoanId)
+        {
+            try
+            {
+                _loanDetailRepository.Edit(loanDetail);
 
-				TempData["message"] = "Datos editados correctamente.";
+                TempData["message"] = "Datos editados correctamente.";
 
-				return RedirectToAction(nameof(Index));
-			}
-			catch (Exception ex)
-			{
-				TempData["message"] = ex.Message;
+                // Redirige a la vista GetAllLoanDetails con el LoanId pasado como parámetro
+                return RedirectToAction("GetAllLoanDetails", "Loan", new { id = LoanId });
+            }
+            catch (Exception ex)
+            {
+                TempData["message"] = ex.Message;
 
-				ViewBag.Books = _booksList;
+                ViewBag.Books = _booksList;
 
-				return View(loanDetail);
-			}
-		}
+                return View(loanDetail);
+            }
+        }
 
-		// GET: LoanDetailController/Delete/5
-		[HttpGet]
+        // GET: LoanDetailController/Delete/5
+        [HttpGet]
 		public ActionResult Delete(int id)
 		{
 			var loanDetail = _loanDetailRepository.GetById(id);

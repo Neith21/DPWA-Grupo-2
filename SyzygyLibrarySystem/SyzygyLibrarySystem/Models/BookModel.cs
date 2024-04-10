@@ -12,21 +12,22 @@ namespace SyzygyLibrarySystem.Models
         [DisplayName("Título del libro")]
         public string Title { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Seleccione un autor")]
         [DisplayName("Autor")]
         public int AuthorId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Seleccione una editorial")]
         [DisplayName("Editorial")]
         public int PublisherId { get; set; }
 
         [DisplayName("Año de publicación")]
-        public DateTime PublicationYear { get; set; }
+        public DateTime? PublicationYear { get; set; }
 
         [DisplayName("Género")]
         public string? Genre { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Ingrese la cantidad disponible")]
+        [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor que cero.")]
         [DisplayName("Cantidad disponible")]
         public int Quantity { get; set; }
 

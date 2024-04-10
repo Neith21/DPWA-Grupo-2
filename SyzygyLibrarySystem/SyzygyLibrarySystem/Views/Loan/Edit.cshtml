@@ -10,7 +10,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <form asp-action="Create" onsubmit="return confirmAction();">
+            <form asp-action="Edit" onsubmit="return confirmAction();">
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -21,6 +21,9 @@
                     </div>
                 }
 
+                <div class="mb-3">
+                    <input asp-for="LoanId" type="hidden" class="form-control" />
+                </div>
                 <div class="mb-3">
                     <label asp-for="StudentCode" class="form-label">Código del estudiante</label>
                     <input asp-for="StudentCode" type="search" class="form-control" />
@@ -37,7 +40,12 @@
                     <span asp-validation-for="ReturnDate" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <input asp-for="LoanStatus" type="hidden" class="form-control" />
+                    <label asp-for="LoanStatus" class="form-label">Estado del préstamo</label>
+                    <select asp-for="LoanStatus" class="form-select">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Devuelto">Devuelto</option>
+                    </select>
+                    <span asp-validation-for="LoanStatus" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
@@ -55,11 +63,6 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
-        var today = new Date().toISOString().split('T')[0];
-
-        document.getElementById('loanDateInput').setAttribute('min', today);
-        document.getElementById('returnDateInput').setAttribute('min', today);
-
         function confirmAction() {
             if (confirm('¿Estás seguro de hacer este préstamo?')) {
                 return true;

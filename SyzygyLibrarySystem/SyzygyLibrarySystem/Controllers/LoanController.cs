@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using SyzygyLibrarySystem.Models;
 using SyzygyLibrarySystem.Repositories.LoanDetails;
 using SyzygyLibrarySystem.Repositories.Loans;
+using SyzygyLibrarySystem.Repositories.Students;
+using SyzygyLibrarySystem.Services.Email;
 
 namespace SyzygyLibrarySystem.Controllers
 {
@@ -12,12 +14,17 @@ namespace SyzygyLibrarySystem.Controllers
 	{
         private readonly ILoanRepository _loanRepository;
         private readonly ILoanDetailRepository _loanDetailRepository;
+        private readonly IStudentRepository _studentRepository;
+        private readonly IEmailService _emailService;
 
-		public LoanController(ILoanRepository loanRepository, ILoanDetailRepository loanDetailRepository)
+		public LoanController(ILoanRepository loanRepository, ILoanDetailRepository loanDetailRepository, IStudentRepository studentRepository, IEmailService emailService)
 		{
 			_loanRepository = loanRepository;
 			_loanDetailRepository = loanDetailRepository;
-		}
+            _studentRepository = studentRepository;
+            _emailService = emailService;
+
+        }
 
 		// GET: LoanController
 		public ActionResult Index()
@@ -50,11 +57,20 @@ namespace SyzygyLibrarySystem.Controllers
         {
             try
             {
+                loan.LoanStatus = "Pendiente";
+
                 _loanRepository.Add(loan);
 
                 TempData["message"] = "Datos guardados correctamente.";
 
                 int lastLoanId = _loanRepository.GetLast();
+
+                StudentModel dataStudent = _studentRepository.GetById(loan.StudentCode);
+                string email = dataStudent.Email;
+                string subject = $"Bienvenido {dataStudent.StudentName}";
+                string body = "Gracias por solicitar nuestros servicios" + dataStudent.StudentName;
+                string name = dataStudent.StudentName;
+                _emailService.SendEmail(email, name, subject, body);
 
                 return RedirectToAction("GetAllLoanDetails", new { id = lastLoanId });
             }
@@ -71,6 +87,7 @@ namespace SyzygyLibrarySystem.Controllers
                 return View(loan);
             }
         }
+
 
         // GET: LoanController/Edit/5
         [HttpGet]
@@ -98,6 +115,12 @@ namespace SyzygyLibrarySystem.Controllers
                 TempData["message"] = "Datos editados correctamente.";
 
                 return RedirectToAction(nameof(Index));
+            }
+            catch (SqlException ex) when (ex.Number == 547)
+            {
+                TempData["message"] = "Posiblemente el estudiante no esté registrado.";
+
+                return View(loan);
             }
             catch (Exception ex)
             {

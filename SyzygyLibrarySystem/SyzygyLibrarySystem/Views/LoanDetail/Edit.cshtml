@@ -14,19 +14,34 @@
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                @if (TempData["message"] != null)
+                {
+                    <div class="alert alert-primary" role="alert">
+                        @TempData["message"]
+                    </div>
+                }
+
                 <div class="mb-3">
                     <input asp-for="DetailId" type="hidden" class="form-control" />
                 </div>
                 <div class="mb-3">
+                    <input type="hidden" name="LoanId" value="@Model.LoanId" />
+                </div>
+                <div class="mb-3">
                     <label asp-for="LoanId" class="form-label">Préstamo ID</label>
-                    <input asp-for="LoanId" type="text" class="form-control" />
+                    <input asp-for="LoanId" type="text" class="form-control" readonly="readonly" />
                     <span asp-validation-for="LoanId" class="text-danger"></span>
+                </div>
+                <div class="mb-3" hidden>
+                    <label asp-for="BookId" class="form-label">Libro</label>
+                    <select asp-for="BookId" asp-items="@ViewBag.Books" class="form-select">
+                        <option value="">Seleccione</option>
+                    </select>
+                    <span asp-validation-for="BookId" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <label asp-for="BookId" class="form-label">Libro</label>
-                    <select asp-for="BookId"
-                            asp-items="@ViewBag.Books"
-                            class="form-select">
+                    <select asp-for="BookId" asp-items="@ViewBag.Books" class="form-select" disabled>
                         <option value="">Seleccione</option>
                     </select>
                     <span asp-validation-for="BookId" class="text-danger"></span>
@@ -41,10 +56,13 @@
                     <span asp-validation-for="Quantity" class="text-danger"></span>
                 </div>
 
-                <div class="form-group">
-                    <input type="submit" value="Guardar" class="btn btn-primary" />
-
-                    <a asp-action="Index" class="btn btn-danger">Regresar al listado</a>
+                <div class="d-flex justify-content-between">
+                    <form id="editForm" method="post" asp-action="Edit" asp-controller="LoanDetail">
+                        <input type="hidden" name="LoanId" value="@Model.LoanId" />
+                        <input type="hidden" name="DetailId" value="@Model.DetailId" />
+                        <input type="submit" value="Guardar" class="btn btn-primary" />
+                    </form>
+                    <a id="regresarLink" class="btn btn-danger">Regresar al listado</a>
                 </div>
             </form>
         </div>
@@ -60,10 +78,22 @@
             if (confirm('¿Estás seguro de editar este libro al detalle de préstamo?')) {
                 return true;
             } else {
-                window.location.href = '@Url.Action("Index", "LoanDetail")';
+                var url = '@Url.Action("GetAllLoanDetails", "Loan", new { id = @Model.LoanId })';
+                window.location.href = url;
                 return false;
             }
         }
+
+        document.getElementById('regresarLink').addEventListener('click', function () {
+            var url = '@Url.Action("GetAllLoanDetails", "Loan", new { id = @Model.LoanId })';
+            window.location.href = url;
+        });
+
+        document.getElementById('editForm').addEventListener('submit', function () {
+            var url = '@Url.Action("GetAllLoanDetails", "Loan", new { id = @Model.LoanId })';
+            window.location.href = url;
+        });
+
         function increment() {
             var input = document.getElementById('Quantity');
             var currentValue = parseInt(input.value);

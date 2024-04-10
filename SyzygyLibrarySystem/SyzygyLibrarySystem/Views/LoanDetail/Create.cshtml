@@ -14,6 +14,13 @@
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                @if (TempData["message"] != null)
+                {
+                    <div class="alert alert-primary" role="alert">
+                        @TempData["message"]
+                    </div>
+                }
+
                 <div class="mb-3">
                     <label asp-for="LoanId" class="form-label">Préstamo ID</label>
                     <input asp-for="LoanId" type="text" class="form-control" readonly="readonly" id="loanIdInput" />
@@ -43,7 +50,7 @@
                         <input type="hidden" name="LoanId" value="@ViewBag.LoanId" />
                         <input type="submit" value="Guardar" class="btn btn-primary" />
                     </form>
-                    <a asp-action="Index" class="btn btn-danger">Regresar al listado</a>
+                    <a id="regresarLink" class="btn btn-danger">Regresar al listado</a>
                 </div>
             </form>
         </div>
@@ -60,11 +67,19 @@
 
         document.getElementById('loanIdInput').value = id;
 
+        document.getElementById('regresarLink').addEventListener('click', function () {
+            var url = '@Url.Action("GetAllLoanDetails", "Loan", new { id = "PLACEHOLDER" })';
+            url = url.replace('PLACEHOLDER', id);
+            window.location.href = url;
+        });
+
         function confirmAction() {
             if (confirm('¿Estás seguro de añadir este libro al préstamo?')) {
                 return true;
             } else {
-                window.location.href = '@Url.Action("Index", "Loan")';
+                var url = '@Url.Action("GetAllLoanDetails", "Loan", new { id = "PLACEHOLDER" })';
+                url = url.replace('PLACEHOLDER', id);
+                window.location.href = url;
                 return false;
             }
         }

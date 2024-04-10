@@ -5,10 +5,10 @@ namespace SyzygyLibrarySystem.Models
 {
     public class AuthorModel
     {
-        [Required]
+        [Required(ErrorMessage = "El ID del autor es requerido.")]
         public int AuthorId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El nombre del autor es requerido.")]
         [DisplayName("Nombre del autor")]
         public string AuthorName { get; set; }
 
@@ -16,6 +16,7 @@ namespace SyzygyLibrarySystem.Models
         public string? Nationality { get; set; }
 
         [DisplayName("Fecha de nacimiento del autor")]
+        [Required(ErrorMessage = "La fecha de nacimiento del autor es requerida.")]
         public DateTime BirthDate { get; set; }
     }
 }

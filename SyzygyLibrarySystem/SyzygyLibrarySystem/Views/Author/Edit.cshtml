@@ -1,37 +1,37 @@
 ﻿@model AuthorModel
-
 @{
-    ViewData["Title"] = "Editar Autor";
+    ViewData["Title"] = "Nuevo Autor";
 }
 
-<h1 style="text-align:center">Editar Autor</h1>
+<h1 style="text-align:center">Agregar Autor</h1>
 <hr />
 
-<<div class="container">
+<div class="container">
     <div class="row">
         <div class="col-md-12">
-            <form asp-action="Edit">
+            <form asp-action="Edit" onsubmit="return confirmAction();">
+                @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="AuthorId" class="control-label"></label>
-                    <input asp-for="AuthorId" class="form-control" />
-                    <span asp-validation-for="AuthorId" class="text-danger"></span>
+
+                <div class="mb-3">
+                    <input asp-for="AuthorId" type="hidden" class="form-control" />
                 </div>
-                <div class="form-group">
-                    <label asp-for="AuthorName" class="control-label"></label>
-                    <input asp-for="AuthorName" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="AuthorName" class="form-label">Nombre Autor</label>
+                    <input asp-for="AuthorName" type="text" class="form-control" />
                     <span asp-validation-for="AuthorName" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Nationality" class="control-label"></label>
-                    <input asp-for="Nationality" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="Nationality" class="form-label">Nacionalidad</label>
+                    <input asp-for="Nationality" type="text" class="form-control" />
                     <span asp-validation-for="Nationality" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="BirthDate" class="control-label"></label>
+                <div class="mb-3">
+                    <label asp-for="BirthDate" class="form-label">Fecha de Nacimiento</label>
                     <input asp-for="BirthDate" type="date" class="form-control" />
                     <span asp-validation-for="BirthDate" class="text-danger"></span>
                 </div>
+
                 <div class="form-group">
                     <input type="submit" value="Guardar" class="btn btn-primary" />
 
@@ -48,10 +48,10 @@
     }
     <script>
         function confirmAction() {
-            if (confirm('¿Estás seguro de editar los datos del autor?')) {
+            if (confirm('¿Estás seguro de agregar este autor?')) {
                 return true;
             } else {
-                window.location.href = '@Url.Action("Index", "Publisher")';
+                window.location.href = '@Url.Action("Index", "Author")';
                 return false;
             }
         }

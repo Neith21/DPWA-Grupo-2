@@ -6,6 +6,7 @@ namespace SyzygyLibrarySystem.Models
     public class StudentModel
     {
         [Required(ErrorMessage = "Ingrese el código del estudiante.")]
+        [RegularExpression(@"^U\d{8}$", ErrorMessage = "El código del estudiante debe tener el formato U########.")]
         public string Code { get; set; }
 
         [Required(ErrorMessage = "Ingrese el nombre del estudiante.")]
